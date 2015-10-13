@@ -28,11 +28,15 @@ def deg_to_rad(angle):
 
 def main():
 
+    #   Defining a dictionary, The city name is known as a 'key' and the numbers are known as 'values'
+    #   Here, the values are stored as a 'tuple', meaning multiple values
     cities = {"DUB": (53.421333, -6.270075), "LHR": (51.4775, -0.461389),
               "JFK": (40.639751, -73.778925), "AAL": (57.092789, 9.849164),
               "CDG": (49.012779, 2.55), "SYD": (-33.946111, 151.177222)}
 
+    #   Nested for loops around the dictionary
     for item1 in sorted(cities):
+        #   This is how one accesses the values in a dictionary, like a list in a list
         latitude_1 = cities[item1][0]
         longitude_1 = cities[item1][1]
 

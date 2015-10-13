@@ -27,33 +27,32 @@ def deg_to_rad(angle):
     return angle * ((2 * pi) / 360)
 
 
-def get_distance_between_airports():
+def get_distance_between_airports(code1, code2):
 
-    cities = ["DUB", "LHR", "JFK", "AAL", "CDG", "SYD"]
-    latitudes = [53.421333, 51.4775, 40.639751, 57.092789, 49.012779, -33.946111]
-    longitudes = [-6.270075, -0.461389, -73.778925, 9.849164, 2.55, 151.177222]
-    output = []
+    lat_1 = code1[0]
+    long_1 = code1[1]
+    lat_2 = code2[0]
+    long_2 = code2[1]
 
-    print("The first city is where you are. The second city is where you are going")
-
-    for x in range(0, len(latitudes)):
-        final_output = output[:]
-        final_output.append(cities[x])
-        lat_1 = latitudes[x]
-        long_1 = longitudes[x]
-        for y in range(0, len(latitudes)):
-            if x != y:
-                final_output.append(cities[y])
-                lat_2 = latitudes[y]
-                long_2 = longitudes[y]
-                distance = dist(lat_1, lat_2, long_1, long_2)
-                final_output.append(int(distance))
-                # print("The distance between", cities[x], "and", cities[y], "is", distance)
-        print(final_output)
-    return 0
+    return dist(lat_1, lat_2, long_1, long_2)
 
 
 def main():
-    get_distance_between_airports()
+
+    DUB = [53.421333, -6.270075]
+    LHR = [51.4775, -0.461389]
+    JFK = [40.639751, -73.778925]
+    AAL = [57.092789, 9.849164]
+    CDG = [49.012779, 2.55]
+    SYD = [-33.943111, 151.177222]
+    cities = [DUB, LHR, JFK, AAL, CDG, SYD]
+
+    for code1 in cities:
+        for code2 in cities:
+            if code1 != code2:
+                print(code1, code2)
+                distance = get_distance_between_airports(code1, code2)
+                print("The distance between", code1, "and", code2, "is", int(distance))
+
 
 main()

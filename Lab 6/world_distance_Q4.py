@@ -41,11 +41,14 @@ def get_distance_between_airports(airport_code_1, airport_code_2):
 
 def main():
     cities = ["DUB", "LHR", "JFK", "AAL", "CDG", "SYD"]
+    #   Define an empty list for slicing
     output = []
     print("The first city is where you are. The second city is where you are going")
 
     for x in sorted(cities):
+        #   Create a new list at the beginning of every for loop by 'slicing' the empty list
         final_output = output[:]
+        #   Add new items onto this list by the 'append' function
         final_output.append(x)
         for y in sorted(cities):
             if x != y:
