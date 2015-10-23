@@ -3,11 +3,21 @@ from random import randint
 
 def generate_word():
 
-    wordbank = ['rhythm', 'xylophone', 'hospital', 'python', 'instantiation',
-                'accessor', 'constructor', 'algorithm', 'overlord', 'ploughing', 'zephyr']
+    number_of_words = 0
+    word_list = []
+    filename = 'dictionary.txt'
+    with open(filename, "r") as f:
+        for word in f:
+            number_of_words += 1
+            word = word.rstrip()
+            word_list.append(word)
 
-    x = randint(0, len(wordbank)-1)
-    return wordbank[x]
+    answer = ""
+    while len(answer) < 5:
+        x = randint(0, number_of_words - 1)
+        answer = word_list[x]
+
+    return answer
 
 
 def generate_answer_list(word):
@@ -28,13 +38,11 @@ def initial_guess_state(x):
     return guess_state
 
 
-def initial_lives():
-    life_total = 8
-    return life_total
-
-
 def user_guess():
     letter_guess = str(input("Guess a letter \n"))
+    while len(letter_guess) > 1 or len(letter_guess) == 0:
+        print("Only Single Letters Please!")
+        letter_guess = str(input("Guess a letter \n"))
     return letter_guess.lower()
 
 
@@ -65,16 +73,8 @@ def repeat_guess(letter, guess_state, bad_guesses):
     print("Don't worry, I have not taken a life from you")
 
 
-def graphic(lives):
+def graphic(lives, answer):
     if lives == 8:
-        print("So you've fled the Nights Watch, you have become a deserter!")
-        print("A crime punishable by death by beheading!")
-        print("Lucky for you, my sword is in with the smith. TO THE GALLOWS WITH YOU!")
-        print("Whats that you say? You didn't actually take the vow?")
-        print("Very well, This is what we shall do")
-        print("YE OL' HANGMAN")
-        print("8 Lives, 8 chances to see if the gods shine favorably on you this day")
-        print("Hurry though, my gallows are getting lonely. \n")
         print("____________")
         print("|           ")
         print("|           ")
@@ -138,44 +138,68 @@ def graphic(lives):
         print("|      /|\  ")
         print("|      / \  ")
         print("|           ")
-        print("Another one bites the dust")
         print("GAME OVER")
+        print("The word was", answer)
 
 
 def rules():
-    print("You have 8 chances to guess letters in the word I am thinking of")
-    print("You may not guess the word fully, only the letters inside it.")
-    print("Incorrect guesses means you loose a life")
-    print("Correct guesses and you don't loose a life")
+    print("You have 8 chances to guess letters in the word I am thinking of.")
+    print("You may only guess one letter at a time.")
+    print("Incorrect guesses means you loose a life.")
+    print("Correct guesses and you don't loose a life.")
+    print("After every correct guess, you will be prompted to see if you want to guess the full word.")
+    print("The game is over when your lives are exhausted or the word is guessed.")
     print("Good Luck!")
+
+
+def guess_full_word(answer):
+    guess = input("Enter your guess: \n")
+    guess = guess.lower()
+    if guess == answer:
+        print('YOU WON, the word was:', guess)
+        attempt = True
+    else:
+        print("Sorry, try again. \n No lives have been lost")
+        attempt = False
+    return attempt
 
 
 def main():
     answer = generate_word()
     answer_list = generate_answer_list(answer)
-    lives = initial_lives()
+    lives = 8
     bad_guesses = []
-    graphic(lives)
+    graphic(lives, answer)
     rules()
 
     guess_state = initial_guess_state(len(answer_list))
 
     while lives != 0:
         letter = user_guess()
-        if letter not in bad_guesses:
-            if letter in guess_state:
-                repeat_guess(letter, guess_state, bad_guesses)
-            elif letter in answer_list:
-                guess_state = right_guess(letter, guess_state, answer_list)
-                if guess_state == answer:
-                    print('YOU WON, the word was:', guess_state)
-                    return 0
-            else:
-                lives = wrong_guess(lives, letter, bad_guesses)
-                graphic(lives)
 
-        elif letter in bad_guesses:
+        if letter in bad_guesses or letter in guess_state:
             repeat_guess(letter, guess_state, bad_guesses)
+
+        elif letter in answer_list:
+            guess_state = right_guess(letter, guess_state, answer_list)
+            if guess_state == answer:
+                print('YOU WON, the word was:', guess_state)
+                #   Prompt to guess the full word
+            full_guess = input("Would you like to guess the word? (Y)es or (N)o \n")
+            full_guess = full_guess.upper()
+            if full_guess == "Y":
+                attempt = guess_full_word(answer)
+                if attempt:
+                    return 0
+
+        else:
+            lives = wrong_guess(lives, letter, bad_guesses)
+            graphic(lives, answer)
+
+
+
+
+
 
 
 
